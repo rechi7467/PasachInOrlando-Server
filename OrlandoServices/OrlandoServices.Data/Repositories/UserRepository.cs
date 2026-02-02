@@ -18,45 +18,29 @@ namespace OrlandoServices.Data.Repositories
         {
             _context = context;
         }
-        public User CreateUser(User user)
+        public void Add(User user)
         {
             _context.User.Add(user);
-            _context.SaveChanges();
-            return user;
         }
 
-        public void DeleteUser(int id)
+        public void Remove(User user)
         {
-            var user = _context.User.Find(id);
-            if (user == null)
-                throw new KeyNotFoundException($"User with id {id} not found");
-
             _context.User.Remove(user);
-            _context.SaveChanges();
         }
 
-        public List<User> GetAllUsers()
+        public List<User> GetAll()
         {
             return _context.User.ToList();
         }
 
-        public User GetById(int id)
+        public User? GetById(int id)
         {
-            var user = _context.User.Find(id);
-            if (user == null)
-                throw new KeyNotFoundException($"User with id {id} not found");
-            return user;
+            return _context.User.Find(id);
         }
 
-        public User UpdateUser(User user)
+        public void Update(User user)
         {
-            var existingUser = _context.User.Find(user.Id);
-            if (existingUser == null)
-                throw new KeyNotFoundException($"User with id {user.Id} not found");
-
-            _context.Entry(existingUser).CurrentValues.SetValues(user);
-            _context.SaveChanges();
-            return existingUser;
+            _context.User.Update(user);
         }
     }
 }

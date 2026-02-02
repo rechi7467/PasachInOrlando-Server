@@ -16,35 +16,25 @@ namespace OrlandoServices.Data.Repositories
         {
             _context = context;
         }
-        public Payment CreatePayment(Payment payment)
+        public void Add(Payment payment)
         {
             _context.Payment.Add(payment);
-            _context.SaveChanges();
-            return payment;
         }
-        public List<Payment> GetPaymentsByOrderId(int orderId)
+        public List<Payment> GetByOrderId(int orderId)
         {
             return _context.Payment.Where(p => p.OrderId == orderId).ToList();
         }
-        public List<Payment> GetPaymentsByStatus(PaymentStatus status)
+        public List<Payment> GetByStatus(PaymentStatus status)
         {
             return _context.Payment.Where(p => p.Status == status).ToList();
         }
-        public Payment GetById(int id)
+        public Payment? GetById(int id)
         {
-            var payment = _context.Payment.Find(id);
-            if (payment == null)
-                throw new KeyNotFoundException($"Payment with id {id} not found");
-            return payment;
+            return _context.Payment.Find(id);
         }
-        public Payment UpdatePaymentStatus(int paymentId, PaymentStatus status)
+        public void Update(Payment payment)
         {
-            var existingPayment = _context.Payment.Find(paymentId);
-            if (existingPayment == null)
-                throw new KeyNotFoundException($"Payment with id {paymentId} not found");
-            existingPayment.Status = status;
-            _context.SaveChanges();
-            return existingPayment;
+            _context.Payment.Update(payment);
         }
     }
 }

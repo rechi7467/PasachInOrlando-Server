@@ -12,6 +12,7 @@ namespace OrlandoServices.Core.Models
         public int ServiceId { get; set; }
         public Service? Service { get; set; }
         [Required]
+        [MaxLength(100)]
         public string FieldName { get; set; } = null!;
         [Required]
         public FieldType FieldType { get; set; }

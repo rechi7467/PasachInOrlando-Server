@@ -8,8 +8,10 @@ namespace OrlandoServices.Core.Models
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public int UserId { get; set; }
-        public User? user { get; set; }
+        public User? User { get; set; }
+        [Required]
         public int ServiceId { get; set; }
         public Service? Service { get; set; }
         public OrderStatus Status { get; set; } 

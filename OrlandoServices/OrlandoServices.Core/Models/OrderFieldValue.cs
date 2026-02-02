@@ -11,6 +11,7 @@ namespace OrlandoServices.Core.Models
         public Order? Order { get; set; }
         [Required]
         public string Value { get; set; } = null!;
+        [Required]
         public int ServiceFieldId { get; set; }
         public ServiceField? ServiceField { get; set; }
     }

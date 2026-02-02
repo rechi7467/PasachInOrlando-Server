@@ -15,46 +15,29 @@ namespace OrlandoServices.Data.Repositories
         {
             _context = context;
         }
-        public List<AdminUser> GetAllAdminUsers()
+        public List<AdminUser> GetAll()
         {
             return _context.AdminUser.ToList();
         }
-        public AdminUser GetAdminUserById(int id)
+        public AdminUser? GetById(int id)
         {
-        var existing = _context.AdminUser.Find(id);
-            if (existing == null) 
-                throw new KeyNotFoundException($"AdminUser with id {id} not found");
-            return existing;
+            return _context.AdminUser.Find(id);
         }
-        public AdminUser CreateAdminUser(AdminUser adminUser)
+        public void Add(AdminUser adminUser)
         {
-            _context.AdminUser.Add(adminUser);
-            _context.SaveChanges();
-            return adminUser;
+           _context.AdminUser.Add(adminUser);
         }
-        public AdminUser UpdateAdminUser(AdminUser adminUser,int id)
+        public void Update(AdminUser adminUser)
         {
-            var existing = _context.AdminUser.Find(id);
-            if (existing == null)
-                throw new KeyNotFoundException($"AdminUser with id {id} not found");
-            _context.Entry(existing).CurrentValues.SetValues(adminUser);
-            _context.SaveChanges();
-            return existing;
+            _context.AdminUser.Update(adminUser);
         }
-        public void DeleteAdminUser(int id)
+        public void Remove(AdminUser adminUser)
         {
-            var existing = _context.AdminUser.Find(id);
-            if (existing == null)
-                throw new KeyNotFoundException($"AdminUser with id {id} not found");
-            _context.AdminUser.Remove(existing);
-            _context.SaveChanges();
+            _context.AdminUser.Remove(adminUser);
         }
-        public AdminUser GetAdminUserByName(string name)
+        public AdminUser? GetByName(string name)
         {
-            var adminUser = _context.AdminUser.FirstOrDefault(au => au.Username == name);
-            if (adminUser == null)
-                throw new KeyNotFoundException($"AdminUser with name {name} not found");
-            return adminUser;
+            return _context.AdminUser.FirstOrDefault(au => au.Username == name);
         }
     }
 }

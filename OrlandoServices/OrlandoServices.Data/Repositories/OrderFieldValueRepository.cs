@@ -8,47 +8,33 @@ using System.Threading.Tasks;
 
 namespace OrlandoServices.Data.Repositories
 {
-    public class OrderFieldValueRepository:IOrderFieldValueRepository
+    public class OrderFieldValueRepository : IOrderFieldValueRepository
     {
         private readonly DBContext _context;
         public OrderFieldValueRepository(DBContext context)
         {
             _context = context;
         }
-
-        public OrderFieldValue CreateOrderFieldValue(OrderFieldValue orderFieldValue)
+        public void Add(OrderFieldValue orderFieldValue)
         {
             _context.OrderFieldValue.Add(orderFieldValue);
-            _context.SaveChanges();
-            return orderFieldValue;
         }
-        public OrderFieldValue GetById(int id)
+        public OrderFieldValue? GetById(int id)
         {
-            var orderFieldValue = _context.OrderFieldValue.Find(id);
-            if (orderFieldValue == null)
-                throw new KeyNotFoundException($"OrderFieldValue with id {id} not found");
-            return orderFieldValue;
+            return _context.OrderFieldValue.FirstOrDefault(of => of.Id == id);
         }
-        public List<OrderFieldValue> GetOrderFieldValuesByOrderId(int orderId)
+        public List<OrderFieldValue> GetByOrderId(int orderId)
         {
-            var order = _context.Order.Find(orderId);
-            if (order == null)
-                throw new KeyNotFoundException($"Order with id {orderId} not found");
             return _context.OrderFieldValue.Where(ofv => ofv.OrderId == orderId).ToList();
         }
-        public List<OrderFieldValue> CreateOrderFieldValues(List<OrderFieldValue> orderFieldValues)
+        public void AddRange(List<OrderFieldValue> orderFieldValues)
         {
             _context.OrderFieldValue.AddRange(orderFieldValues);
-            _context.SaveChanges();
-            return orderFieldValues;
         }
-        public void DeleteByOrderId(int orderId)
+        public void RemoveByOrderId(int orderId)
         {
-            var orderFieldValues = _context.OrderFieldValue.Where(ofv => ofv.OrderId == orderId).ToList();
-            if (orderFieldValues.Count == 0)
-                throw new KeyNotFoundException($"No OrderFieldValues found for Order with id {orderId}");
-            _context.OrderFieldValue.RemoveRange(orderFieldValues);
-            _context.SaveChanges();
+            var values = _context.OrderFieldValue.Where(ofv => ofv.OrderId == orderId).ToList();
+            _context.OrderFieldValue.RemoveRange(values);
         }
     }
 }

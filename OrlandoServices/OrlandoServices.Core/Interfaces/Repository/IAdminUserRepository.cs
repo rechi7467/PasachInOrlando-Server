@@ -9,11 +9,11 @@ namespace OrlandoServices.Core.Interfaces.Repository
 {
     public interface IAdminUserRepository
     {
-        public List<AdminUser> GetAllAdminUsers();
-        public AdminUser GetAdminUserById(int id);
-        public AdminUser GetAdminUserByName(string name);
-        public AdminUser CreateAdminUser(AdminUser adminUser);
-        public AdminUser UpdateAdminUser(AdminUser adminUser, int id);
-        public void DeleteAdminUser(int id);
+        public List<AdminUser> GetAll();
+        public AdminUser? GetById(int id);
+        public AdminUser? GetByName(string name);
+        public void Add(AdminUser adminUser);
+        public void Update(AdminUser adminUser);
+        public void Remove(AdminUser adminUser);
     }
 }

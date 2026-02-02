@@ -8,45 +8,32 @@ using System.Threading.Tasks;
 
 namespace OrlandoServices.Data.Repositories
 {
-    public class ServiceFieldRepository:IServiceFieldRepository
+    public class ServiceFieldRepository : IServiceFieldRepository
     {
         private readonly DBContext _context;
-        public ServiceFieldRepository(DBContext context) {
-                        _context = context;
+        public ServiceFieldRepository(DBContext context)
+        {
+            _context = context;
         }
-        public ServiceField CreateServiceField(ServiceField serviceField)
+        public void Add(ServiceField serviceField)
         {
             _context.ServiceField.Add(serviceField);
-            _context.SaveChanges();
-            return serviceField;
         }
-        public void DeleteServiceField(int id)
+        public void Remove(ServiceField serviceField)
         {
-            var serviceField = _context.ServiceField.Find(id);
-            if (serviceField == null)
-                throw new KeyNotFoundException($"ServiceField with id {id} not found");
             _context.ServiceField.Remove(serviceField);
-            _context.SaveChanges();
         }
-        public ServiceField GetById(int id)
+        public ServiceField? GetById(int id)
         {
-            var serviceField = _context.ServiceField.Find(id);
-            if (serviceField == null)
-                throw new KeyNotFoundException($"ServiceField with id {id} not found");
-            return serviceField;
+            return _context.ServiceField.Find(id);
         }
-        public List<ServiceField> GetServiceFieldsByServiceId(int id)
+        public List<ServiceField> GetByServiceId(int id)
         {
             return _context.ServiceField.Where(sf => sf.ServiceId == id).ToList();
         }
-        public ServiceField UpdateServiceField(ServiceField serviceField)
+        public void Update(ServiceField serviceField)
         {
-            var existingServiceField = _context.ServiceField.Find(serviceField.Id);
-            if (existingServiceField == null)
-                throw new KeyNotFoundException($"ServiceField with id {serviceField.Id} not found");
-            _context.Entry(existingServiceField).CurrentValues.SetValues(serviceField);
-            _context.SaveChanges();
-            return existingServiceField;
+            _context.ServiceField.Update(serviceField);
         }
 
     }

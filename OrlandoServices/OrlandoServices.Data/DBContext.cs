@@ -30,7 +30,7 @@ namespace OrlandoServices.Data
 
             // User → Orders (One-to-Many)
             modelBuilder.Entity<Order>()
-                .HasOne(o => o.user)
+                .HasOne(o => o.User)
                 .WithMany(u => u.Orders)
                 .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Cascade);

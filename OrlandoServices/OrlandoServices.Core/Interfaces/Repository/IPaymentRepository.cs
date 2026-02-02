@@ -10,10 +10,10 @@ namespace OrlandoServices.Core.Interfaces.Repository
 {
     public interface IPaymentRepository
     {
-        public Payment GetById(int id);
-        public List<Payment> GetPaymentsByOrderId(int orderId);
-        public List<Payment> GetPaymentsByStatus(PaymentStatus status);
-        public Payment CreatePayment(Payment payment);
-        public Payment UpdatePaymentStatus(int paymentId, PaymentStatus status);
+        public Payment? GetById(int id);
+        public List<Payment> GetByOrderId(int orderId);
+        public List<Payment> GetByStatus(PaymentStatus status);
+        public void Add(Payment payment);
+        public void Update(Payment payment);
     }
 }

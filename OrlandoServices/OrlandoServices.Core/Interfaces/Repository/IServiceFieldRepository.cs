@@ -9,11 +9,11 @@ namespace OrlandoServices.Core.Interfaces.Repository
 {
     public interface IServiceFieldRepository
     {
-        public ServiceField GetById(int id);
-        public List<ServiceField> GetServiceFieldsByServiceId(int id);
-        public ServiceField CreateServiceField(ServiceField serviceField);
-        public ServiceField UpdateServiceField(ServiceField serviceField);
-        public void DeleteServiceField(int id);
+        public ServiceField? GetById(int id);
+        public List<ServiceField> GetByServiceId(int id);
+        public void Add(ServiceField serviceField);
+        public void Update(ServiceField serviceField);
+        public void Remove(ServiceField serviceField);
 
     }
 }

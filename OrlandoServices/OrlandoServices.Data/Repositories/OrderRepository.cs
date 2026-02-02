@@ -16,41 +16,23 @@ namespace OrlandoServices.Data.Repositories
             _context = context;
         }
 
-        public List<Order> GetAllOrders()
+        public Order? GetById(int id)
         {
-            return _context.Order.ToList();
+            return _context.Order.FirstOrDefault(o => o.Id == id);
         }
-        public Order GetById(int id)
-        {
-            var order = _context.Order.Find(id);
-            if (order == null)
-                throw new KeyNotFoundException($"Order with id {id} not found");
-            return order;
-        }
-        public Order CreateOrder(Order order)
+        public void Add(Order order)
         {
             _context.Order.Add(order);
-            _context.SaveChanges();
-            return order;
         }
-        public Order UpdateOrder(Order order,int id)
+        public void Update(Order order)
         {
-            var existingOrder = _context.Order.Find(id);
-            if (existingOrder == null)
-                throw new KeyNotFoundException($"Order with id {id} not found");
-            _context.Entry(existingOrder).CurrentValues.SetValues(order);
-            _context.SaveChanges();
-            return existingOrder;
+            _context.Order.Update(order);
         }
-        public void DeleteOrder(int id)
+        public void Remove(Order order)
         {
-            var order = _context.Order.Find(id);
-            if (order == null)
-                throw new KeyNotFoundException($"Order with id {id} not found");
             _context.Order.Remove(order);
-            _context.SaveChanges();
         }
-        public List<Order> GetOrdersByUserId(int userId)
+        public List<Order> GetByUserId(int userId)
         {
             return _context.Order.Where(o => o.UserId == userId).ToList();
         }

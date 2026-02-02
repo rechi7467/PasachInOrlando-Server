@@ -13,6 +13,7 @@ namespace OrlandoServices.Core.Models
         public int OrderId { get; set; }
         public Order? Order { get; set; }
         [Required]
+        [Range(0.01, double.MaxValue)]
         public decimal Amount { get; set; }
 
         [Required]

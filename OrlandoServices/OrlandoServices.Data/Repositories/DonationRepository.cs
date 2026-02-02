@@ -17,45 +17,27 @@ namespace OrlandoServices.Data.Repositories
         {
             _context = context;
         }
-        public Donation CreateDonation(Donation donation)
+        public void Add(Donation donation)
         {
             _context.Donation.Add(donation);
-            _context.SaveChanges();
-            return donation;
         }
-        public void DeleteDonation(int id)
+        public void Remove(Donation donation)
         {
-            var donation = _context.Donation.Find(id);
-            if (donation == null)
-                throw new KeyNotFoundException($"Donation with id {id} not found");
             _context.Donation.Remove(donation);
-            _context.SaveChanges();
         }
-        public List<Donation> GetAllDonations()
+        public Donation? GetById(int id)
         {
-            return _context.Donation.ToList();
+            return _context.Donation.FirstOrDefault(o => o.Id == id);
         }
-        public Donation GetById(int id)
+        public void Update(Donation donation)
         {
-            var donation = _context.Donation.Find(id);
-            if (donation == null)
-                throw new KeyNotFoundException($"Donation with id {id} not found");
-            return donation;
+            _context.Donation.Update(donation);
         }
-        public Donation UpdateDonationStatus(PaymentStatus status, int id)
-        {
-            var existingDonation = _context.Donation.Find(id);
-            if (existingDonation == null)
-                throw new KeyNotFoundException($"Donation with id {id} not found");
-           existingDonation.Status = status;
-            _context.SaveChanges();
-            return existingDonation;
-        }
-        public List<Donation> GetDonationsByStatus(PaymentStatus status)
+        public List<Donation> GetByStatus(PaymentStatus status)
         {
             return _context.Donation.Where(d => d.Status == status).ToList();
         }
-        public List<Donation> GetDonationsByUserId(int userId)
+        public List<Donation> GetByUserId(int userId)
         {
             return _context.Donation.Where(d => d.UserId == userId).ToList();
         }

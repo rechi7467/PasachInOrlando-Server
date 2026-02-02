@@ -10,12 +10,11 @@ namespace OrlandoServices.Core.Interfaces.Repository
 {
     public interface IDonationRepository
     {
-        public List<Donation> GetAllDonations();
-        public List<Donation> GetDonationsByUserId(int userId);
-        public List<Donation> GetDonationsByStatus(PaymentStatus status);
-        public Donation GetById(int id);
-        public Donation CreateDonation(Donation donation);
-        public Donation UpdateDonationStatus(PaymentStatus status,int id);
-        public void DeleteDonation(int id);
+        public List<Donation> GetByUserId(int userId);
+        public List<Donation> GetByStatus(PaymentStatus status);
+        public Donation? GetById(int id);
+        public void Add(Donation donation);
+        public void Update(Donation donation);
+        public void Remove(Donation donation);
     }
 }

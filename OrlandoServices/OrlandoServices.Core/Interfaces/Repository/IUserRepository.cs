@@ -9,11 +9,11 @@ namespace OrlandoServices.Core.Interfaces.Repository
 {
     public interface IUserRepository
     {
-        public List<User> GetAllUsers();
-        public User GetById(int id);    
-        public User CreateUser(User user);
-        public User UpdateUser(User user);
-        public void DeleteUser(int id);
+        public List<User> GetAll();
+        public User? GetById(int id);    
+        public void Add(User user);
+        public void Update(User user);
+        public void Remove(User user);
 
     }
 }
