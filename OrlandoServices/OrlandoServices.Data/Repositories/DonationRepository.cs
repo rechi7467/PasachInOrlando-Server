@@ -33,6 +33,10 @@ namespace OrlandoServices.Data.Repositories
         {
             _context.Donation.Update(donation);
         }
+        public List<Donation> GetAll()
+        {
+            return _context.Donation.ToList();
+        }
         public List<Donation> GetByStatus(PaymentStatus status)
         {
             return _context.Donation.Where(d => d.Status == status).ToList();

@@ -9,5 +9,6 @@ namespace OrlandoServices.Core.Interfaces.Service
         void UpdateDonationStatus(int donationId, PaymentStatus newStatus);
         List<DonationResponseDto> GetDonationsByUser(int userId);
         List<DonationResponseDto> GetDonationsByStatus(PaymentStatus status);
+        List<DonationResponseDto> GetAll();
     }
 }

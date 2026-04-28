@@ -98,5 +98,8 @@ namespace OrlandoServices.Service
 
         public List<DonationResponseDto> GetDonationsByStatus(PaymentStatus status) =>
             _donationRepository.GetByStatus(status).Select(ToResponseDto).ToList();
+
+        public List<DonationResponseDto> GetAll() =>
+            _donationRepository.GetAll().Select(ToResponseDto).ToList();
     }
 }

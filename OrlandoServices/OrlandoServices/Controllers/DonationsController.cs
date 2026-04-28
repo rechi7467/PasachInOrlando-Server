@@ -54,7 +54,7 @@ namespace OrlandoServices.Controllers
             if (status.HasValue)
                 return Ok(_donationService.GetDonationsByStatus(status.Value));
 
-            return Ok(_donationService.GetDonationsByStatus(PaymentStatus.Pending));
+            return Ok(_donationService.GetAll());
         }
 
         // אדמין / מערכת תשלום — עדכון סטטוס תרומה

@@ -10,6 +10,7 @@ namespace OrlandoServices.Core.Interfaces.Repository
 {
     public interface IDonationRepository
     {
+        public List<Donation> GetAll();
         public List<Donation> GetByUserId(int userId);
         public List<Donation> GetByStatus(PaymentStatus status);
         public Donation? GetById(int id);
