@@ -15,5 +15,6 @@ namespace OrlandoServices.Core.Interfaces.Repository
         public List<Payment> GetByStatus(PaymentStatus status);
         public void Add(Payment payment);
         public void Update(Payment payment);
+        public void SaveChanges();
     }
 }

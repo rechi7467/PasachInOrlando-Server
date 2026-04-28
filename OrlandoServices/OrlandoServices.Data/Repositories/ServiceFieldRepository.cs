@@ -19,6 +19,10 @@ namespace OrlandoServices.Data.Repositories
         {
             _context.ServiceField.Add(serviceField);
         }
+        public void AddRange(List<ServiceField> serviceFields)
+        {
+            _context.ServiceField.AddRange(serviceFields);
+        }
         public void Remove(ServiceField serviceField)
         {
             _context.ServiceField.Remove(serviceField);
@@ -35,6 +39,9 @@ namespace OrlandoServices.Data.Repositories
         {
             _context.ServiceField.Update(serviceField);
         }
-
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
+        }
     }
 }

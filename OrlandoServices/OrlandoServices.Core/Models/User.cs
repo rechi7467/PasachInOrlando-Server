@@ -41,8 +41,10 @@ namespace OrlandoServices.Core.Models
         [Required]
         [MaxLength(20)]
         public string ZipCode { get; set; } = null!;
+        [MaxLength(256)]
+        public string? PasswordHash { get; set; }
+        public bool IsActive { get; set; } = true;
 
-        [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // זמן יצירת המשתמש
         public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<Donation> Donations { get; set; } = new List<Donation>();

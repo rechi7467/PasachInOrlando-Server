@@ -14,9 +14,10 @@ namespace OrlandoServices.Data
         public DBContext(DbContextOptions<DBContext> options) : base(options) { }
 
         public DbSet<User> User { get; set; } = null!;
-        public DbSet<Service> Service { get; set; } = null!;
+        public DbSet<Services> Service { get; set; } = null!;
         public DbSet<ServiceField> ServiceField { get; set; } = null!;
         public DbSet<Order> Order { get; set; } = null!;
+        public DbSet<OrderItem> OrderItem { get; set; } = null!;
         public DbSet<OrderFieldValue> OrderFieldValue { get; set; } = null!;
         public DbSet<Payment> Payment { get; set; } = null!;
         public DbSet<Donation> Donation { get; set; } = null!;
@@ -35,11 +36,18 @@ namespace OrlandoServices.Data
                 .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Service → Orders (One-to-Many)
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Service)
-                .WithMany(s => s.Orders)
-                .HasForeignKey(o => o.ServiceId)
+            // Order → OrderItems (One-to-Many)
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Service → OrderItems (One-to-Many)
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Service)
+                .WithMany(s => s.OrderItems)
+                .HasForeignKey(oi => oi.ServiceId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Service → ServiceFields (One-to-Many)
@@ -49,11 +57,11 @@ namespace OrlandoServices.Data
                 .HasForeignKey(sf => sf.ServiceId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Orders → OrderFieldValues (One-to-Many)
+            // OrderItem → OrderFieldValues (One-to-Many)
             modelBuilder.Entity<OrderFieldValue>()
-                .HasOne(ofv => ofv.Order)
-                .WithMany(o => o.OrderFieldValues)
-                .HasForeignKey(ofv => ofv.OrderId)
+                .HasOne(ofv => ofv.OrderItem)
+                .WithMany(oi => oi.OrderFieldValues)
+                .HasForeignKey(ofv => ofv.OrderItemId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // ServiceFields → OrderFieldValues (One-to-Many)

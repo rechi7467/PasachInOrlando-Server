@@ -1,4 +1,5 @@
-﻿using OrlandoServices.Core.Interfaces.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using OrlandoServices.Core.Interfaces.Repository;
 using OrlandoServices.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -15,25 +16,41 @@ namespace OrlandoServices.Data.Repositories
         {
             _context = context;
         }
-        public void Add(Service service)
+        public void Add(Services service)
         {
             _context.Service.Add(service);
         }
-        public void Remove(Service service)
+        public void Remove(Services service)
         {
             _context.Service.Remove(service);
         }
-        public List<Service> GetAll()
+        public List<Services> GetAll()
         {
             return _context.Service.ToList();
         }
-        public Service? GetById(int id)
+        public List<Services> GetAllWithDetails()
         {
-            return _context.Service.FirstOrDefault(s => s.Id == id);
+            return _context.Service
+                .Include(s => s.ServiceFields)
+                .ToList();
         }
-        public void Update(Service service)
+        public Services? GetById(int id)
+        {
+            return _context.Service.Find(id);
+        }
+        public Services? GetByIdWithDetails(int id)
+        {
+            return _context.Service
+                .Include(s => s.ServiceFields)
+                .FirstOrDefault(s => s.Id == id);
+        }
+        public void Update(Services service)
         {
             _context.Service.Update(service);
+        }
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
         }
     }
 }

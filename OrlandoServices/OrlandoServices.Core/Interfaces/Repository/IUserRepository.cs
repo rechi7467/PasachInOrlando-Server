@@ -10,10 +10,15 @@ namespace OrlandoServices.Core.Interfaces.Repository
     public interface IUserRepository
     {
         public List<User> GetAll();
-        public User? GetById(int id);    
+        List<User> GetAllWithDetails(); // טוען Orders + Donations
+        public User? GetById(int id);
+        User? GetByIdWithDetails(int id);
         public void Add(User user);
         public void Update(User user);
         public void Remove(User user);
+        public bool ExistsByEmail(string email);
+        public User? GetByEmail(string email);
+        public void SaveChanges();
 
     }
 }

@@ -9,11 +9,13 @@ namespace OrlandoServices.Core.Interfaces.Repository
 {
     public interface IServiceRepository
     {
-        public List<Service> GetAll();
-        public Service? GetById(int id);
-        public void Add(Service service);
-        public void Update(Service service);
-        public void Remove(Service service);
-
+        public List<Services> GetAll();
+        List<Services> GetAllWithDetails();
+        public Services? GetById(int id);
+        Services? GetByIdWithDetails(int id);
+        public void Add(Services service);
+        public void Update(Services  service);
+        public void Remove(Services service);
+        public void SaveChanges();
     }
 }

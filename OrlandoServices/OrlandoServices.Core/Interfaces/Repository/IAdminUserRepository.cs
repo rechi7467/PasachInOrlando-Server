@@ -15,5 +15,6 @@ namespace OrlandoServices.Core.Interfaces.Repository
         public void Add(AdminUser adminUser);
         public void Update(AdminUser adminUser);
         public void Remove(AdminUser adminUser);
+        public void SaveChanges();
     }
 }

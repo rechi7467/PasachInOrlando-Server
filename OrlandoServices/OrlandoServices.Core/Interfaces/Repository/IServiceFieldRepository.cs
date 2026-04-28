@@ -12,8 +12,10 @@ namespace OrlandoServices.Core.Interfaces.Repository
         public ServiceField? GetById(int id);
         public List<ServiceField> GetByServiceId(int id);
         public void Add(ServiceField serviceField);
+        public void AddRange(List<ServiceField> serviceFields);
         public void Update(ServiceField serviceField);
         public void Remove(ServiceField serviceField);
+        public void SaveChanges();
 
     }
 }

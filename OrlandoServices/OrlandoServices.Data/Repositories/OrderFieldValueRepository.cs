@@ -1,4 +1,5 @@
-﻿using OrlandoServices.Core.Interfaces.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using OrlandoServices.Core.Interfaces.Repository;
 using OrlandoServices.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -21,20 +22,31 @@ namespace OrlandoServices.Data.Repositories
         }
         public OrderFieldValue? GetById(int id)
         {
-            return _context.OrderFieldValue.FirstOrDefault(of => of.Id == id);
+            return _context.OrderFieldValue.Find(id);
         }
-        public List<OrderFieldValue> GetByOrderId(int orderId)
+        public List<OrderFieldValue> GetByOrderItemId(int orderItemId)
         {
-            return _context.OrderFieldValue.Where(ofv => ofv.OrderId == orderId).ToList();
+            return _context.OrderFieldValue.Where(ofv => ofv.OrderItemId == orderItemId).ToList();
+        }
+        public List<OrderFieldValue> GetByOrderItemIdWithDetails(int orderItemId)
+        {
+            return _context.OrderFieldValue
+                .Include(ofv => ofv.ServiceField)
+                .Where(ofv => ofv.OrderItemId == orderItemId)
+                .ToList();
         }
         public void AddRange(List<OrderFieldValue> orderFieldValues)
         {
             _context.OrderFieldValue.AddRange(orderFieldValues);
         }
-        public void RemoveByOrderId(int orderId)
+        public void RemoveByOrderItemId(int orderItemId)
         {
-            var values = _context.OrderFieldValue.Where(ofv => ofv.OrderId == orderId).ToList();
+            var values = _context.OrderFieldValue.Where(ofv => ofv.OrderItemId == orderItemId).ToList();
             _context.OrderFieldValue.RemoveRange(values);
+        }
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
         }
     }
 }

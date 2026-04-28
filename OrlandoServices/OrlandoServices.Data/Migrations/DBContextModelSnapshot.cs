@@ -63,6 +63,14 @@ namespace OrlandoServices.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("GuestEmail")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("GuestName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<int?>("OrderId")
                         .HasColumnType("integer");
 
@@ -92,8 +100,9 @@ namespace OrlandoServices.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -101,12 +110,13 @@ namespace OrlandoServices.Data.Migrations
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ServiceId");
 
                     b.HasIndex("UserId");
 
@@ -121,7 +131,14 @@ namespace OrlandoServices.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("OrderId")
+                    b.Property<string>("FieldNameAtOrderTime")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("FieldTypeAtOrderTime")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrderItemId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ServiceFieldId")
@@ -133,11 +150,51 @@ namespace OrlandoServices.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderItemId");
 
                     b.HasIndex("ServiceFieldId");
 
                     b.ToTable("OrderFieldValue");
+                });
+
+            modelBuilder.Entity("OrlandoServices.Core.Models.OrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ServiceName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("OrderItem");
                 });
 
             modelBuilder.Entity("OrlandoServices.Core.Models.Payment", b =>
@@ -175,34 +232,6 @@ namespace OrlandoServices.Data.Migrations
                     b.ToTable("Payment");
                 });
 
-            modelBuilder.Entity("OrlandoServices.Core.Models.Service", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("BasePrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Service");
-                });
-
             modelBuilder.Entity("OrlandoServices.Core.Models.ServiceField", b =>
                 {
                     b.Property<int>("Id")
@@ -219,8 +248,14 @@ namespace OrlandoServices.Data.Migrations
                     b.Property<int>("FieldType")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsRequired")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Options")
+                        .HasColumnType("text");
 
                     b.Property<int>("OrderIndex")
                         .HasColumnType("integer");
@@ -228,11 +263,49 @@ namespace OrlandoServices.Data.Migrations
                     b.Property<int>("ServiceId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Version")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ServiceId");
 
                     b.ToTable("ServiceField");
+                });
+
+            modelBuilder.Entity("OrlandoServices.Core.Models.Services", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("BasePrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Service");
                 });
 
             modelBuilder.Entity("OrlandoServices.Core.Models.User", b =>
@@ -266,10 +339,17 @@ namespace OrlandoServices.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -310,28 +390,20 @@ namespace OrlandoServices.Data.Migrations
 
             modelBuilder.Entity("OrlandoServices.Core.Models.Order", b =>
                 {
-                    b.HasOne("OrlandoServices.Core.Models.Service", "Service")
-                        .WithMany("Orders")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("OrlandoServices.Core.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Service");
-
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("OrlandoServices.Core.Models.OrderFieldValue", b =>
                 {
-                    b.HasOne("OrlandoServices.Core.Models.Order", "Order")
+                    b.HasOne("OrlandoServices.Core.Models.OrderItem", "OrderItem")
                         .WithMany("OrderFieldValues")
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("OrderItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -341,9 +413,28 @@ namespace OrlandoServices.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Order");
+                    b.Navigation("OrderItem");
 
                     b.Navigation("ServiceField");
+                });
+
+            modelBuilder.Entity("OrlandoServices.Core.Models.OrderItem", b =>
+                {
+                    b.HasOne("OrlandoServices.Core.Models.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OrlandoServices.Core.Models.Services", "Service")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("OrlandoServices.Core.Models.Payment", b =>
@@ -359,7 +450,7 @@ namespace OrlandoServices.Data.Migrations
 
             modelBuilder.Entity("OrlandoServices.Core.Models.ServiceField", b =>
                 {
-                    b.HasOne("OrlandoServices.Core.Models.Service", "Service")
+                    b.HasOne("OrlandoServices.Core.Models.Services", "Service")
                         .WithMany("ServiceFields")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -372,21 +463,26 @@ namespace OrlandoServices.Data.Migrations
                 {
                     b.Navigation("Donations");
 
-                    b.Navigation("OrderFieldValues");
+                    b.Navigation("OrderItems");
 
                     b.Navigation("Payments");
                 });
 
-            modelBuilder.Entity("OrlandoServices.Core.Models.Service", b =>
+            modelBuilder.Entity("OrlandoServices.Core.Models.OrderItem", b =>
                 {
-                    b.Navigation("Orders");
-
-                    b.Navigation("ServiceFields");
+                    b.Navigation("OrderFieldValues");
                 });
 
             modelBuilder.Entity("OrlandoServices.Core.Models.ServiceField", b =>
                 {
                     b.Navigation("OrderFieldValues");
+                });
+
+            modelBuilder.Entity("OrlandoServices.Core.Models.Services", b =>
+                {
+                    b.Navigation("OrderItems");
+
+                    b.Navigation("ServiceFields");
                 });
 
             modelBuilder.Entity("OrlandoServices.Core.Models.User", b =>

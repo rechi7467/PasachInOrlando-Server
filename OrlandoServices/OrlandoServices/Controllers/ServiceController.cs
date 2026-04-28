@@ -1,43 +1,120 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OrlandoServices.Core.DTOs;
+using OrlandoServices.Core.Exceptions;
+using OrlandoServices.Core.Interfaces.Service;
 
 namespace OrlandoServices.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/services")]
     public class ServiceController : ControllerBase
     {
-        // GET: api/<ServicesController>
+        private readonly IServicesService _servicesService;
+
+        public ServiceController(IServicesService servicesService)
+        {
+            _servicesService = servicesService;
+        }
+
+        // לקוח — רשימת שירותים פעילים
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult GetAll()
         {
-            return new string[] { "value1", "value2" };
+            var services = _servicesService.GetActiveServices();
+            return Ok(services);
         }
 
-        // GET api/<ServicesController>/5
+        // לקוח — שירות ספציפי עם השדות שלו
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult GetById(int id)
         {
-            return "value";
+            try
+            {
+                var service = _servicesService.GetServiceById(id);
+                return Ok(service);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        // POST api/<ServicesController>
+        // אדמין — כל השירותים כולל לא פעילים
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin/all")]
+        public IActionResult GetAllForAdmin()
+        {
+            var services = _servicesService.GetAllServices();
+            return Ok(services);
+        }
+
+        // אדמין — שירות ספציפי עם פרטים מלאים
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin/{id}")]
+        public IActionResult GetByIdForAdmin(int id)
+        {
+            try
+            {
+                var service = _servicesService.GetServiceByIdForAdmin(id);
+                return Ok(service);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        // אדמין — הוספת שירות חדש
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Create([FromBody] CreateServiceDto dto)
         {
+            try
+            {
+                _servicesService.CreateService(dto);
+                return Ok("Service created successfully");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        // PUT api/<ServicesController>/5
+        // אדמין — עדכון שירות קיים
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Update(int id, [FromBody] UpdateServiceDto dto)
         {
+            try
+            {
+                _servicesService.UpdateService(id, dto);
+                return Ok("Service updated successfully");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        // DELETE api/<ServicesController>/5
+        // אדמין — השבתת שירות (לא מחיקה)
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            try
+            {
+                _servicesService.DeleteService(id);
+                return Ok("Service deactivated successfully");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

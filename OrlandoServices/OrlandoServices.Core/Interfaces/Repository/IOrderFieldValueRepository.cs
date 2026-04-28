@@ -10,9 +10,11 @@ namespace OrlandoServices.Core.Interfaces.Repository
     public interface IOrderFieldValueRepository
     {
         public OrderFieldValue? GetById(int id);
-        public List<OrderFieldValue> GetByOrderId(int orderId);
+        public List<OrderFieldValue> GetByOrderItemId(int orderItemId);
+        List<OrderFieldValue> GetByOrderItemIdWithDetails(int orderItemId);
         public void Add(OrderFieldValue orderFieldValue);
         public void AddRange(List<OrderFieldValue> orderFieldValues);
-        public void RemoveByOrderId(int orderId);
+        public void RemoveByOrderItemId(int orderItemId);
+        public void SaveChanges();
     }
 }

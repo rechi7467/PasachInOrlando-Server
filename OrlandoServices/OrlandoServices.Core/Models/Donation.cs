@@ -15,6 +15,11 @@ namespace OrlandoServices.Core.Models
         [Required]
         [Range(0.01, double.MaxValue)]
         public decimal Amount { get; set; }
+        [MaxLength(100)]
+        public string? GuestName { get; set; }
+        [MaxLength(100)]
+        [EmailAddress]
+        public string? GuestEmail { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public PaymentStatus Status { get; set; }
 

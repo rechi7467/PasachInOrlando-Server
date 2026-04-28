@@ -11,14 +11,14 @@ namespace OrlandoServices.Core.Models
         [Required]
         public int UserId { get; set; }
         public User? User { get; set; }
-        [Required]
-        public int ServiceId { get; set; }
-        public Service? Service { get; set; }
-        public OrderStatus Status { get; set; } 
+        public OrderStatus Status { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; }
+        [MaxLength(500)]
+        public string? Notes { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public ICollection<Payment> Payments { get; set; } = new List<Payment>();
-        public ICollection<OrderFieldValue> OrderFieldValues { get; set; } = new List<OrderFieldValue>();
         public ICollection<Donation> Donations { get; set; } = new List<Donation>();
 
 

@@ -28,19 +28,44 @@ namespace OrlandoServices.Data.Repositories
             _context.User.Remove(user);
         }
 
-        public List<User> GetAll()
+        public List<User> GetAll()//  בלי ההזמנות והתרומת של המשתמש   
         {
             return _context.User.ToList();
         }
+        public List<User> GetAllWithDetails()//  עם ההזמנות והתרומת של המשתמש
+        {
+            return _context.User
+                .Include(u => u.Orders)
+                .Include(u => u.Donations)
+                .ToList();
+        }
 
-        public User? GetById(int id)
+        public User? GetById(int id)//  בלי ההזמנות והתרומת של המשתמש 
         {
             return _context.User.Find(id);
         }
-
+        public User? GetByIdWithDetails(int id)//  עם ההזמנות והתרומת של המשתמש
+        {
+            return _context.User
+                .Include(u => u.Orders)
+                .Include(u => u.Donations)
+                .FirstOrDefault(u => u.Id == id);
+        }
         public void Update(User user)
         {
             _context.User.Update(user);
+        }
+        public bool ExistsByEmail(string email)
+        {
+            return _context.User.Any(u => u.Email == email);
+        }
+        public User? GetByEmail(string email)
+        {
+            return _context.User.FirstOrDefault(u => u.Email == email);
+        }
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
         }
     }
 }

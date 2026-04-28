@@ -27,7 +27,7 @@ namespace OrlandoServices.Data.Repositories
         }
         public Donation? GetById(int id)
         {
-            return _context.Donation.FirstOrDefault(o => o.Id == id);
+            return _context.Donation.Find(id);
         }
         public void Update(Donation donation)
         {
@@ -40,6 +40,10 @@ namespace OrlandoServices.Data.Repositories
         public List<Donation> GetByUserId(int userId)
         {
             return _context.Donation.Where(d => d.UserId == userId).ToList();
+        }
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
         }
     }
 }

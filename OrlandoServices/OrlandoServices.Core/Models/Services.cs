@@ -2,7 +2,7 @@
 
 namespace OrlandoServices.Core.Models
 {
-    public class Service
+    public class Services
     {
         public int Id { get; set; }
         [Required]
@@ -13,7 +13,10 @@ namespace OrlandoServices.Core.Models
         [Range(0, double.MaxValue)]
         public decimal BasePrice { get; set; }
         public bool IsActive { get; set; } = true;
-        public ICollection<Order> Orders { get; set; } = new List<Order>();
+        [MaxLength(500)]
+        public string? ImageUrl { get; set; }
+        public int SortOrder { get; set; } = 0;
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public ICollection<ServiceField> ServiceFields { get; set; } = new List<ServiceField>();
 
 

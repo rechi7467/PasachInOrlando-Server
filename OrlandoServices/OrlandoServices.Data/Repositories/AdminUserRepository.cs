@@ -39,5 +39,9 @@ namespace OrlandoServices.Data.Repositories
         {
             return _context.AdminUser.FirstOrDefault(au => au.Username == name);
         }
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
+        }
     }
 }

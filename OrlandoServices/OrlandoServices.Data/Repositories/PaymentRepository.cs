@@ -36,5 +36,9 @@ namespace OrlandoServices.Data.Repositories
         {
             _context.Payment.Update(payment);
         }
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
+        }
     }
 }

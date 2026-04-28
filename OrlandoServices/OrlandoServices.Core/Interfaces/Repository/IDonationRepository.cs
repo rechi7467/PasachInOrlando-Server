@@ -16,5 +16,6 @@ namespace OrlandoServices.Core.Interfaces.Repository
         public void Add(Donation donation);
         public void Update(Donation donation);
         public void Remove(Donation donation);
+        public void SaveChanges();
     }
 }

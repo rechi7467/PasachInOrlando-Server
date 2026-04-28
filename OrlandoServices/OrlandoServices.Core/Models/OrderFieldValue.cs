@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OrlandoServices.Core.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OrlandoServices.Core.Models
@@ -7,12 +8,15 @@ namespace OrlandoServices.Core.Models
     {
         public int Id { get; set; }
         [Required]
-        public int OrderId { get; set; }
-        public Order? Order { get; set; }
+        public int OrderItemId { get; set; }
+        public OrderItem? OrderItem { get; set; }
         [Required]
         public string Value { get; set; } = null!;
         [Required]
         public int ServiceFieldId { get; set; }
+        public FieldType FieldTypeAtOrderTime { get; set; }
+        public string FieldNameAtOrderTime { get; set; } = null!;
         public ServiceField? ServiceField { get; set; }
     }
 }
+                                                                                                                                                                                    
