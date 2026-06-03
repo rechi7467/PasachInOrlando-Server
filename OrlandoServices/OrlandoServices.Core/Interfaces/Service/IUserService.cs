@@ -20,5 +20,6 @@ namespace OrlandoServices.Core.Interfaces.Service
         public void DeleteUser(int id);
         public AuthResponseDto Login(LoginDto dto);
         public void SetPassword(SetPasswordDto dto);
+        public AuthResponseDto RegisterUser(RegisterUserDto dto);
     }
 }

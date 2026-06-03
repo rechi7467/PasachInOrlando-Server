@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OrlandoServices.Core.Models.Enums;
 
 namespace OrlandoServices.Core.DTOs
 {
@@ -11,7 +7,8 @@ namespace OrlandoServices.Core.DTOs
         public string? Name { get; set; }
         public string? Description { get; set; }
         public decimal? BasePrice { get; set; }
-        public bool? IsActive { get; set; }
+        public string? ImageUrl { get; set; }
+        public ServiceStatus? Status { get; set; }
         public List<CreateServiceFieldDto>? NewFields { get; set; }
         public Dictionary<int, UpdateServiceFieldDto>? UpdatedFields { get; set; }
         public List<int>? FieldIdsToDelete { get; set; }

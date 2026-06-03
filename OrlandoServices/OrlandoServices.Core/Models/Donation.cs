@@ -23,5 +23,7 @@ namespace OrlandoServices.Core.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public PaymentStatus Status { get; set; }
 
+        [MaxLength(255)]
+        public string? StripePaymentIntentId { get; set; }
     }
 }

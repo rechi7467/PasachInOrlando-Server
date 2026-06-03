@@ -65,6 +65,7 @@ builder.Services.AddDbContext<DBContext>(options =>
     options.UseNpgsql(connectionString));
 
 // ריפוזיטוריז
+builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
@@ -76,6 +77,7 @@ builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IAdminUserRepository, AdminUserRepository>();
 
 // סרביסים
+builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IServicesService, ServicesService>();
 builder.Services.AddScoped<IOrderService, OrderService>();

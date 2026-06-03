@@ -30,8 +30,8 @@ namespace OrlandoServices.Controllers
 
             try
             {
-                _orderService.CreateOrder(int.Parse(userIdClaim), dto);
-                return Ok("Order created successfully");
+                var order = _orderService.CreateOrder(int.Parse(userIdClaim), dto);
+                return Ok(order);
             }
             catch (NotFoundException ex)
             {

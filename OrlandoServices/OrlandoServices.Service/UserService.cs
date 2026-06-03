@@ -60,6 +60,7 @@ namespace OrlandoServices.Service
             State = user.State,
             ZipCode = user.ZipCode,
             IsActive = user.IsActive,
+            HasPassword = user.PasswordHash != null,
             CreatedAt = user.CreatedAt,
             TotalOrders = user.Orders.Count,
             TotalDonations = user.Donations.Count
@@ -302,6 +303,70 @@ namespace OrlandoServices.Service
 
             var expiryDays = int.Parse(_configuration["Jwt:ExpiryDays"]!);
 
+            return new AuthResponseDto
+            {
+                Token = GenerateToken(user),
+                UserId = user.Id,
+                FirstName = user.FirstName,
+                Email = user.Email,
+                ExpiresAt = DateTime.UtcNow.AddDays(expiryDays)
+            };
+        }
+
+        public AuthResponseDto RegisterUser(RegisterUserDto dto)
+        {
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
+
+            if (string.IsNullOrWhiteSpace(dto.FirstName))
+                throw new ArgumentException("First name is required");
+
+            if (string.IsNullOrWhiteSpace(dto.LastName))
+                throw new ArgumentException("Last name is required");
+
+            if (string.IsNullOrWhiteSpace(dto.Email) || !IsValidEmail(dto.Email))
+                throw new ArgumentException("A valid email is required");
+
+            if (_userRepository.ExistsByEmail(dto.Email.Trim()))
+                throw new ArgumentException("An account with this email already exists");
+
+            if (string.IsNullOrWhiteSpace(dto.Phone))
+                throw new ArgumentException("Phone is required");
+
+            if (string.IsNullOrWhiteSpace(dto.BillingAddress))
+                throw new ArgumentException("Billing address is required");
+
+            if (string.IsNullOrWhiteSpace(dto.City))
+                throw new ArgumentException("City is required");
+
+            if (string.IsNullOrWhiteSpace(dto.State))
+                throw new ArgumentException("State is required");
+
+            if (string.IsNullOrWhiteSpace(dto.ZipCode))
+                throw new ArgumentException("Zip code is required");
+
+            if (string.IsNullOrWhiteSpace(dto.Password) || dto.Password.Length < 6)
+                throw new ArgumentException("Password must be at least 6 characters");
+
+            var user = new User
+            {
+                FirstName = dto.FirstName.Trim(),
+                LastName = dto.LastName.Trim(),
+                Email = dto.Email.Trim(),
+                Phone = dto.Phone.Trim(),
+                BillingAddress = dto.BillingAddress.Trim(),
+                City = dto.City.Trim(),
+                State = dto.State.Trim(),
+                ZipCode = dto.ZipCode.Trim(),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _userRepository.Add(user);
+            _userRepository.SaveChanges();
+
+            var expiryDays = int.Parse(_configuration["Jwt:ExpiryDays"]!);
             return new AuthResponseDto
             {
                 Token = GenerateToken(user),

@@ -57,10 +57,15 @@ namespace OrlandoServices.Service
             {
                 Id = order.Id,
                 UserId = order.UserId,
+                CustomerFirstName = order.User?.FirstName,
+                CustomerLastName = order.User?.LastName,
+                CustomerEmail = order.User?.Email,
+                CustomerPhone = order.User?.Phone,
                 Status = order.Status,
                 TotalAmount = order.TotalAmount,
                 CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
+                Notes = order.Notes,
                 Items = items.Select(ToItemResponseDto).ToList()
             };
         }
@@ -89,8 +94,8 @@ namespace OrlandoServices.Service
                     throw new ArgumentException("Quantity must be at least 1");
 
                 var service = _serviceRepository.GetById(itemDto.ServiceId);
-                if (service == null || !service.IsActive)
-                    throw new NotFoundException($"Service {itemDto.ServiceId} not found or inactive");
+                if (service == null || service.Status != ServiceStatus.Active)
+                    throw new NotFoundException($"Service {itemDto.ServiceId} not found or unavailable");
 
                 var totalPrice = service.BasePrice * itemDto.Quantity;
 
@@ -130,7 +135,7 @@ namespace OrlandoServices.Service
             return order;
         }
 
-        public void CreateOrder(int userId, CreateOrderDto dto)
+        public OrderResponseDto CreateOrder(int userId, CreateOrderDto dto)
         {
             if (dto == null)
                 throw new ArgumentNullException(nameof(dto));
@@ -145,8 +150,9 @@ namespace OrlandoServices.Service
             _unitOfWork.BeginTransaction();
             try
             {
-                BuildOrder(userId, dto.Items);
+                var order = BuildOrder(userId, dto.Items);
                 _unitOfWork.Commit();
+                return ToResponseDto(order);
             }
             catch
             {
@@ -228,8 +234,8 @@ namespace OrlandoServices.Service
                     foreach (var itemDto in dto.ItemsToAdd)
                     {
                         var service = _serviceRepository.GetById(itemDto.ServiceId);
-                        if (service == null || !service.IsActive)
-                            throw new NotFoundException($"Service {itemDto.ServiceId} not found or inactive");
+                        if (service == null || service.Status != ServiceStatus.Active)
+                            throw new NotFoundException($"Service {itemDto.ServiceId} not found or unavailable");
 
                         var totalPrice = service.BasePrice * itemDto.Quantity;
 

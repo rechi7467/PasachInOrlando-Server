@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OrlandoServices.Core.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace OrlandoServices.Core.Models
 {
@@ -12,13 +13,10 @@ namespace OrlandoServices.Core.Models
         public string Description { get; set; } = null!;
         [Range(0, double.MaxValue)]
         public decimal BasePrice { get; set; }
-        public bool IsActive { get; set; } = true;
-        [MaxLength(500)]
+        public ServiceStatus Status { get; set; } = ServiceStatus.Active;
         public string? ImageUrl { get; set; }
         public int SortOrder { get; set; } = 0;
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public ICollection<ServiceField> ServiceFields { get; set; } = new List<ServiceField>();
-
-
     }
 }

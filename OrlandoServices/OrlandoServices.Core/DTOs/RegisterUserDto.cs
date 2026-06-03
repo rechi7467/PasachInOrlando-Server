@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace OrlandoServices.Core.DTOs
 {
-    public class UserAdminDto
+    public class RegisterUserDto
     {
-        public int Id { get; set; }
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public string Email { get; set; } = null!;
@@ -17,10 +10,6 @@ namespace OrlandoServices.Core.DTOs
         public string City { get; set; } = null!;
         public string State { get; set; } = null!;
         public string ZipCode { get; set; } = null!;
-        public bool IsActive { get; set; }
-        public bool HasPassword { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public int TotalOrders { get; set; }
-        public int TotalDonations { get; set; }
+        public string Password { get; set; } = null!;
     }
 }

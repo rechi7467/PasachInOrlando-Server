@@ -32,8 +32,8 @@ namespace OrlandoServices.Service
             var existingService = _serviceRepository.GetById(field.ServiceId);
             if (existingService == null)
                 throw new NotFoundException("Service not found");
-            if (!existingService.IsActive)
-                throw new InvalidOperationException("Cannot add field to inactive service");
+            if (existingService.Status == ServiceStatus.Hidden)
+                throw new InvalidOperationException("Cannot add field to a hidden service");
 
             if (string.IsNullOrWhiteSpace(field.FieldName))
                 throw new ArgumentException("Field Name is required");
@@ -147,8 +147,8 @@ namespace OrlandoServices.Service
             if (existingService == null)
                 throw new NotFoundException("Service not found");
             // אם השירות לא פעיל — מחזירים רשימה ריקה
-            if (!existingService.IsActive)
-                throw new InvalidOperationException("Service is not active");
+            if (existingService.Status == ServiceStatus.Hidden)
+                throw new InvalidOperationException("Service not found");
 
             return _serviceFieldRepository.GetByServiceId(serviceId)
                 .Where(f => f.IsActive)

@@ -33,6 +33,21 @@ namespace OrlandoServices.Controllers
             }
         }
 
+        // הרשמה עצמית — יוצר חשבון ומחזיר טוקן
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] RegisterUserDto dto)
+        {
+            try
+            {
+                var result = _userService.RegisterUser(dto);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         // הגדרת סיסמה — אורח הופך למשתמש רשום
         [HttpPost("set-password")]
         public IActionResult SetPassword([FromBody] SetPasswordDto dto)

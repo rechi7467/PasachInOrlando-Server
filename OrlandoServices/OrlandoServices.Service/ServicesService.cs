@@ -4,6 +4,7 @@ using OrlandoServices.Core.Interfaces;
 using OrlandoServices.Core.Interfaces.Repository;
 using OrlandoServices.Core.Interfaces.Service;
 using OrlandoServices.Core.Models;
+using OrlandoServices.Core.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,9 +40,8 @@ namespace OrlandoServices.Service
             if (dto.BasePrice < 0)
                 throw new ArgumentException("Base price cannot be negative");
 
-            // חייב להיות לפחות שדה אחד
-            if (dto.Fields == null || !dto.Fields.Any())
-                throw new ArgumentException("Service must have at least one field");
+            if (dto.Fields == null || dto.Fields.Count == 0)
+                throw new ArgumentException("A service must have at least one field");
 
             // התחלת Transaction
             _unitOfWork.BeginTransaction();
@@ -54,7 +54,8 @@ namespace OrlandoServices.Service
                     Name = dto.Name.Trim(),
                     Description = dto.Description.Trim(),
                     BasePrice = dto.BasePrice,
-                    IsActive = true
+                    ImageUrl = string.IsNullOrWhiteSpace(dto.ImageUrl) ? null : dto.ImageUrl.Trim(),
+                    Status = ServiceStatus.Active
                 };
 
                 _serviceRepository.Add(newService);
@@ -106,8 +107,11 @@ namespace OrlandoServices.Service
                 existingService.BasePrice = dto.BasePrice.Value;
             }
 
-            if (dto.IsActive.HasValue)
-                existingService.IsActive = dto.IsActive.Value;
+            if (dto.ImageUrl != null)
+                existingService.ImageUrl = string.IsNullOrWhiteSpace(dto.ImageUrl) ? null : dto.ImageUrl.Trim();
+
+            if (dto.Status.HasValue)
+                existingService.Status = dto.Status.Value;
 
             _unitOfWork.BeginTransaction();
             try
@@ -160,10 +164,7 @@ namespace OrlandoServices.Service
             if (service == null)
                 throw new NotFoundException("Service not found");
 
-            if (!service.IsActive)
-                throw new InvalidOperationException("Service is already inactive");
-
-            service.IsActive = false;
+            service.Status = ServiceStatus.Hidden;
 
             _serviceRepository.Update(service);
             _serviceRepository.SaveChanges();
@@ -178,7 +179,8 @@ namespace OrlandoServices.Service
                     Name = s.Name,
                     Description = s.Description,
                     BasePrice = s.BasePrice,
-                    IsActive = s.IsActive,
+                    ImageUrl = s.ImageUrl,
+                    Status = s.Status,
                     Fields = s.ServiceFields
                         .OrderBy(f => f.OrderIndex)
                         .Select(f => new ServiceFieldAdminDto
@@ -200,13 +202,15 @@ namespace OrlandoServices.Service
         public List<ServiceClientDto> GetActiveServices()
         {
             return _serviceRepository.GetAllWithDetails()
-                .Where(s => s.IsActive)
+                .Where(s => s.Status != ServiceStatus.Hidden)
                 .Select(s => new ServiceClientDto
                 {
                     Id = s.Id,
                     Name = s.Name,
                     Description = s.Description,
                     BasePrice = s.BasePrice,
+                    ImageUrl = s.ImageUrl,
+                    Status = s.Status,
                     Fields = s.ServiceFields
                         .Where(f => f.IsActive)
                         .OrderBy(f => f.OrderIndex)
@@ -229,8 +233,8 @@ namespace OrlandoServices.Service
             if (service == null)
                 throw new NotFoundException("Service not found");
 
-            if (!service.IsActive)
-                throw new InvalidOperationException("Service is not active");
+            if (service.Status == ServiceStatus.Hidden)
+                throw new NotFoundException("Service not found");
 
             return new ServiceClientDto
             {
@@ -238,6 +242,8 @@ namespace OrlandoServices.Service
                 Name = service.Name,
                 Description = service.Description,
                 BasePrice = service.BasePrice,
+                ImageUrl = service.ImageUrl,
+                Status = service.Status,
                 Fields = service.ServiceFields
                     .Where(f => f.IsActive)
                     .OrderBy(f => f.OrderIndex)
@@ -265,7 +271,8 @@ namespace OrlandoServices.Service
                 Name = service.Name,
                 Description = service.Description,
                 BasePrice = service.BasePrice,
-                IsActive = service.IsActive,
+                ImageUrl = service.ImageUrl,
+                Status = service.Status,
                 Fields = service.ServiceFields
                     .OrderBy(f => f.OrderIndex)
                     .Select(f => new ServiceFieldAdminDto

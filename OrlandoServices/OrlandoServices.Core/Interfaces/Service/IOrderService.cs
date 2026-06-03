@@ -11,7 +11,7 @@ namespace OrlandoServices.Core.Interfaces.Service
 {
     public interface IOrderService
     {
-        public void CreateOrder(int userId, CreateOrderDto dto);
+        public OrderResponseDto CreateOrder(int userId, CreateOrderDto dto);
         public OrderResponseDto CreateGuestOrder(CreateGuestOrderDto dto);
         public void UpdateOrder(int orderId, UpdateOrderDto dto);
         public List<OrderResponseDto> GetOrdersByUser(int userId);

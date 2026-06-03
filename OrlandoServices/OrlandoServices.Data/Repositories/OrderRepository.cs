@@ -1,4 +1,5 @@
-﻿using OrlandoServices.Core.Interfaces.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using OrlandoServices.Core.Interfaces.Repository;
 using OrlandoServices.Core.Models;
 using OrlandoServices.Core.Models.Enums;
 using System;
@@ -60,7 +61,7 @@ namespace OrlandoServices.Data.Repositories
 
         public List<Order> GetAll()
         {
-            return _context.Order.ToList();
+            return _context.Order.Include(o => o.User).ToList();
         }
 
         public void SaveChanges()

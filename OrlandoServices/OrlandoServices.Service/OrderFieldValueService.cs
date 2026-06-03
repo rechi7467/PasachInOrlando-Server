@@ -28,7 +28,9 @@ namespace OrlandoServices.Service
             if (fieldValues.Select(v => v.ServiceFieldId).Distinct().Count() != fieldValues.Count)
                 throw new ArgumentException("Duplicate field values are not allowed");
 
-            var serviceFields = _serviceFieldRepository.GetByServiceId(serviceId).ToDictionary(f => f.Id);
+            var serviceFields = _serviceFieldRepository.GetByServiceId(serviceId)
+                .Where(f => f.IsActive)
+                .ToDictionary(f => f.Id);
 
             var requiredFieldIds = serviceFields.Values.Where(f => f.IsRequired).Select(f => f.Id).ToList();
             var sentFieldIds = fieldValues.Select(v => v.ServiceFieldId).ToList();
@@ -44,7 +46,11 @@ namespace OrlandoServices.Service
                     throw new InvalidOperationException("Field does not belong to this service");
 
                 if (string.IsNullOrWhiteSpace(fieldValue.Value))
-                    throw new ArgumentException($"Value for field {fieldValue.ServiceFieldId} is required");
+                {
+                    if (serviceField.IsRequired)
+                        throw new ArgumentException($"Value for field '{serviceField.FieldName}' is required");
+                    continue;
+                }
 
                 entities.Add(new OrderFieldValue
                 {

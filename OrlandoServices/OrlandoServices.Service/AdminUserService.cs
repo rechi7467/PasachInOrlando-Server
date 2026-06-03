@@ -89,7 +89,8 @@ namespace OrlandoServices.Service
                 UserId = admin.Id,
                 FirstName = admin.Username,
                 Email = string.Empty,
-                ExpiresAt = DateTime.UtcNow.AddDays(expiryDays)
+                ExpiresAt = DateTime.UtcNow.AddDays(expiryDays),
+                IsAdmin = true
             };
         }
     }

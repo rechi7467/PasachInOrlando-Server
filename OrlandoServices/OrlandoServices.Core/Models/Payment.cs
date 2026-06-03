@@ -24,7 +24,10 @@ namespace OrlandoServices.Core.Models
         public string TransactionReference { get; set; } = null!;
 
         [Required]
-        public PaymentStatus Status { get; set; } 
+        public PaymentStatus Status { get; set; }
         public DateTime? PaidAt { get; set; }
+
+        [MaxLength(255)]
+        public string? StripePaymentIntentId { get; set; }
     }
 }

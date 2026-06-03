@@ -79,6 +79,10 @@ namespace OrlandoServices.Controllers
             {
                 return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         // אדמין — עדכון שירות קיים

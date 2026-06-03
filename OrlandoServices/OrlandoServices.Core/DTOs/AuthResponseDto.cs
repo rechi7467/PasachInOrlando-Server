@@ -7,5 +7,6 @@ namespace OrlandoServices.Core.DTOs
         public string FirstName { get; set; } = null!;
         public string Email { get; set; } = null!;
         public DateTime ExpiresAt { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }

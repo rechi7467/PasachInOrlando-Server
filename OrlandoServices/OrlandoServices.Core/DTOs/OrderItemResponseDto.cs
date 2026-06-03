@@ -5,6 +5,7 @@ namespace OrlandoServices.Core.DTOs
         public int Id { get; set; }
         public int ServiceId { get; set; }
         public string ServiceName { get; set; } = null!;
+        public string? ServiceImageUrl { get; set; }
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
         public decimal DiscountAmount { get; set; }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OrlandoServices.Data;
@@ -11,9 +12,11 @@ using OrlandoServices.Data;
 namespace OrlandoServices.Data.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20260515123141_RemoveImageUrlMaxLength")]
+    partial class RemoveImageUrlMaxLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,49 +52,6 @@ namespace OrlandoServices.Data.Migrations
                     b.ToTable("AdminUser");
                 });
 
-            modelBuilder.Entity("OrlandoServices.Core.Models.CartItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CartItemId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("FieldValuesJson")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ServiceName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId", "CartItemId")
-                        .IsUnique();
-
-                    b.ToTable("CartItem");
-                });
-
             modelBuilder.Entity("OrlandoServices.Core.Models.Donation", b =>
                 {
                     b.Property<int>("Id")
@@ -119,10 +79,6 @@ namespace OrlandoServices.Data.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
-
-                    b.Property<string>("StripePaymentIntentId")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
@@ -266,10 +222,6 @@ namespace OrlandoServices.Data.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
-
-                    b.Property<string>("StripePaymentIntentId")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("TransactionReference")
                         .IsRequired()
@@ -419,17 +371,6 @@ namespace OrlandoServices.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User");
-                });
-
-            modelBuilder.Entity("OrlandoServices.Core.Models.CartItem", b =>
-                {
-                    b.HasOne("OrlandoServices.Core.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OrlandoServices.Core.Models.Donation", b =>

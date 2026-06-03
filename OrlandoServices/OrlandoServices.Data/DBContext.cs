@@ -22,6 +22,7 @@ namespace OrlandoServices.Data
         public DbSet<Payment> Payment { get; set; } = null!;
         public DbSet<Donation> Donation { get; set; } = null!;
         public DbSet<AdminUser> AdminUser { get; set; } = null!;
+        public DbSet<CartItem> CartItem { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -91,6 +92,17 @@ namespace OrlandoServices.Data
                 .WithMany(o => o.Donations)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            // User → CartItems (One-to-Many)
+            modelBuilder.Entity<CartItem>()
+                .HasOne(c => c.User)
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CartItem>()
+                .HasIndex(c => new { c.UserId, c.CartItemId })
+                .IsUnique();
         }
     }
 }

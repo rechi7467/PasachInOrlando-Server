@@ -11,6 +11,7 @@ namespace OrlandoServices.Core.DTOs
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
         public decimal BasePrice { get; set; }
+        public string? ImageUrl { get; set; }
         public List<CreateServiceFieldDto> Fields { get; set; } = new List<CreateServiceFieldDto>();
     }
 }
