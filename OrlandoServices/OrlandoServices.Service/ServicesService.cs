@@ -25,6 +25,11 @@ namespace OrlandoServices.Service
             _serviceFieldService = serviceFieldService;
             _unitOfWork = unitOfWork;
         }
+        // יצירת שירות חדש עם כל שדותיו הדינמיים בTransaction אחד
+        // - שומר את השירות תחילה (SaveChanges) כדי לקבל Id מה-DB
+        // - רק אחרי שיש Id — יוצר כל שדה ומקשר אליו
+        // - אם יצירת שדה נכשלת — Rollback מוחק גם את השירות שכבר נשמר
+        // - מבטיח שלעולם לא ייווצר שירות ללא שדות
         public void CreateService(CreateServiceDto dto)
         {
             // ולידציה על השירות
@@ -158,6 +163,10 @@ namespace OrlandoServices.Service
                 throw;
             }
         }
+        // Soft Delete — מסתיר שירות מהלקוחות (Status=Hidden) במקום למחוק אותו
+        // - שירות Hidden לא מוצג בעמוד השירותים לקוחות, אך גלוי לממשק הניהול
+        // - כל ההזמנות הקיימות על שירות זה נשמרות שלמות — אין אובדן היסטוריה
+        // - ניתן לשחזרו בקלות על ידי שינוי Status בחזרה ל-Active
         public void DeleteService(int serviceId)
         {
             var service = _serviceRepository.GetById(serviceId);

@@ -70,6 +70,11 @@ namespace OrlandoServices.Service
             };
         }
 
+        // פונקציה פנימית המבנה הזמנה שלמה: הזמנה ראשית + פריטים + ערכי שדות דינמיים
+        // - שומר את ההזמנה תחילה (TotalAmount=0) כדי לקבל Id מה-DB
+        // - לכל פריט: מוודא שהשירות קיים ופעיל, שולף מחיר מה-DB (לא מהלקוח)
+        // - שומר snapshot של שם השירות ומחיר בזמן ההזמנה — כך גם אם השירות ישתנה, ההזמנה תישאר נכונה
+        // - בסוף מחשב ומעדכן TotalAmount האמיתי לפי כל הפריטים
         private Order BuildOrder(int userId, List<CreateOrderItemDto> items)
         {
             var order = new Order
@@ -135,6 +140,10 @@ namespace OrlandoServices.Service
             return order;
         }
 
+        // יצירת הזמנה עבור משתמש מחובר בתוך Transaction
+        // - מוודא שהמשתמש קיים ופעיל לפני שמתחיל כלום
+        // - Transaction: אם כל שלב הצליח → Commit, אם משהו נכשל → Rollback מלא
+        // - מעביר ל-BuildOrder שמטפל בכל הלוגיקה של הפריטים
         public OrderResponseDto CreateOrder(int userId, CreateOrderDto dto)
         {
             if (dto == null)
@@ -161,6 +170,10 @@ namespace OrlandoServices.Service
             }
         }
 
+        // יצירת הזמנה לאורח — יוצר משתמש חדש (ללא סיסמה) ואת ההזמנה בTransaction אחד
+        // - בודק אם האימייל כבר קיים: אם כן — משתמש בו; אם לא — יוצר משתמש חדש
+        // - המשתמש שנוצר אין לו PasswordHash — הוא "אורח"; יוכל להגדיר סיסמה אחר כך דרך SetPassword
+        // - כל הפעולה בTransaction: אם ההזמנה נכשלת — גם יצירת המשתמש מתבטלת
         public OrderResponseDto CreateGuestOrder(CreateGuestOrderDto dto)
         {
             if (dto == null)

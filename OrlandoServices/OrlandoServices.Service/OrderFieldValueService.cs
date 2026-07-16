@@ -17,6 +17,11 @@ namespace OrlandoServices.Service
             _serviceFieldRepository = serviceFieldRepository;
         }
 
+        // שומר את ערכי השדות הדינמיים לפריט הזמנה — עם snapshot של שם וסוג השדה
+        // - בודק שאין שדות כפולים (אותו ServiceFieldId פעמיים)
+        // - מוודא שכל שדות החובה מולאו לפי הגדרת השירות ב-DB
+        // - שומר FieldNameAtOrderTime + FieldTypeAtOrderTime: גם אם השדה ישתנה בעתיד — הנתון ישמר כפי שהיה בזמן ההזמנה
+        // - שדה לא חובה שנשאר ריק — נדלג עליו ולא נשמר כלל
         public void CreateOrderFieldValues(int orderItemId, int serviceId, List<CreateOrderFieldValueDto> fieldValues)
         {
             if (orderItemId <= 0)

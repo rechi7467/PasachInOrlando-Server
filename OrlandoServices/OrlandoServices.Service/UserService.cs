@@ -22,6 +22,11 @@ namespace OrlandoServices.Service
             _configuration = configuration;
         }
 
+        // יוצר JWT Token חתום עבור משתמש מאומת
+        // - מגדיר מפתח חתימה סודי מה-appsettings (אלגוריתם HMAC-SHA256)
+        // - מוסיף Claims לתוך הטוקן: מזהה משתמש, אימייל, תפקיד "User"
+        // - קובע תאריך תפוגה לפי Jwt:ExpiryDays בהגדרות
+        // - הטוקן נשלח ללקוח ונשמר ב-localStorage — כל בקשה עתידית תישא אותו ב-Header
         private string GenerateToken(User user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
@@ -225,6 +230,10 @@ namespace OrlandoServices.Service
             _userRepository.SaveChanges();
         }
 
+        // Soft Delete — לא מוחק מה-DB אלא מכבה את המשתמש (IsActive=false)
+        // - כל ההיסטוריה נשמרת: הזמנות, תרומות — שום דבר לא נאבד
+        // - משתמש מושבת לא יכול להתחבר (Login בודק IsActive לפני הכל)
+        // - ניתן לשחזרו בעתיד על ידי החזרת IsActive=true
         public void DeleteUser(int id)
         {
             // שליפה
@@ -286,6 +295,11 @@ namespace OrlandoServices.Service
             };
         }
 
+        // כניסת משתמש: שליפה לפי אימייל, אימות סיסמה עם BCrypt, החזרת טוקן
+        // - מוודא שהמשתמש פעיל (Soft Delete לא מאפשר כניסה)
+        // - מוודא שיש לו סיסמה — אורח שהזמין ללא הרשמה אין לו סיסמה עדיין
+        // - BCrypt.Verify: משווה את הסיסמה מול ה-Hash השמור — לא מצפין מחדש
+        // - מחזיר טוקן + פרטי משתמש בסיסיים לשמירה ב-localStorage
         public AuthResponseDto Login(LoginDto dto)
         {
             if (dto == null)
@@ -313,6 +327,11 @@ namespace OrlandoServices.Service
             };
         }
 
+        // רישום משתמש חדש — וולידציה, הצפנת סיסמה, שמירה, החזרת טוקן
+        // - בודק שכל השדות קיימים ותקינים (אימייל, פורמט, שדות חובה)
+        // - מוודא שהאימייל לא קיים כבר במערכת
+        // - מצפין את הסיסמה עם BCrypt.HashPassword לפני השמירה — סיסמה גולמית לא נשמרת
+        // - הכניסה מיידית לאחר ההרשמה: מחזיר טוקן בלי צורך בהתחברות נפרדת
         public AuthResponseDto RegisterUser(RegisterUserDto dto)
         {
             if (dto == null)
@@ -377,6 +396,10 @@ namespace OrlandoServices.Service
             };
         }
 
+        // מאפשר לאורח שהזמין ללא הרשמה להגדיר סיסמה ולהפוך למשתמש רשום מלא
+        // - שולף לפי אימייל שנשמר בזמן ההזמנה האורחית
+        // - מוודא שאין לו סיסמה עדיין — מניעת דריסה בשוגג
+        // - מצפין עם BCrypt ושומר — מכאן המשתמש יכול להתחבר כרגיל
         public void SetPassword(SetPasswordDto dto)
         {
             if (dto == null)
