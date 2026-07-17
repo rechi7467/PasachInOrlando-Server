@@ -49,14 +49,20 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// CORS — רק הפרונטאנד שלנו מורשה, עם אישור לשליחת cookies
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        builder =>
+    options.AddPolicy("AllowFrontend",
+        policy =>
         {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
+            policy.WithOrigins(
+                "http://localhost:5173",
+                "http://localhost:5174"
+                // לפני העלאה לענן: להוסיף כאן את דומיין Vercel
+            )
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
         });
 });
 
@@ -118,7 +124,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
+
+// קורא את הטוקן מהקוקי המאובטח ומעביר אותו ל-[Authorize] — ללא שינוי בשאר הקוד
+app.Use(async (context, next) =>
+{
+    if (context.Request.Cookies.TryGetValue("token", out var token) &&
+        !context.Request.Headers.ContainsKey("Authorization"))
+    {
+        context.Request.Headers.Authorization = $"Bearer {token}";
+    }
+    await next();
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
